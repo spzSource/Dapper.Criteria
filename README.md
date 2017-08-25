@@ -19,7 +19,6 @@ public class TestWhereCriteria : Models.Criteria
     public string Name { get; set; }
 }
 ```
-...
 
 ```C#
 QueryBuilder<TestWhereCriteria> builder = new QueryBuilder<TestWhereCriteria>(
@@ -85,7 +84,6 @@ internal class TestJoinCriteria : Models.Criteria
     public bool WithInstruments { get; set; }
 }
 ```
-...
 
 ```C#
 QueryBuilder<TestJoinCriteria> builder = new QueryBuilder<TestJoinCriteria>(
