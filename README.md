@@ -35,7 +35,11 @@ Query query = builder.Build();
 Produced sql:
 
 ```TSQL
-SELECT [tn].* FROM TableName [tn]  WHERE [tn].Id = @tnId  AND [tn].Name Like @tnName 
+SELECT 
+    [tn].* 
+FROM TableName [tn]  
+WHERE [tn].Id = @tnId  
+    AND [tn].Name Like @tnName 
 ```
 
 ### SimpleJoin criteria:
