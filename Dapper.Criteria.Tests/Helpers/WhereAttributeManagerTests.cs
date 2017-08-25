@@ -7,7 +7,7 @@ namespace Dapper.Criteria.Tests.Helpers
 {
     public class WhereAttributeManagerTests
     {
-        private WhereAttributeManager _whereAttributeManager;
+        private readonly WhereAttributeManager _whereAttributeManager;
 
         public WhereAttributeManagerTests()
         {

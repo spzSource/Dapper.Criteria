@@ -7,7 +7,7 @@ namespace Dapper.Criteria.Tests.Helpers
 {
     public class SelectParserTests
     {
-        private SelectParser _selectParser;
+        private readonly SelectParser _selectParser;
 
         public SelectParserTests()
         {
