@@ -25,7 +25,7 @@ namespace Dapper.Criteria.Helpers.Where
                 case WhereType.IsNotNull:
                     return true;
                 default:
-                    throw new ArgumentOutOfRangeException("whereType");
+                    throw new ArgumentOutOfRangeException(nameof(whereType));
             }
         }
 
@@ -47,7 +47,7 @@ namespace Dapper.Criteria.Helpers.Where
                 case WhereType.NotIn:
                     return $"{GetSelector(whereType)} {paramName}";
                 default:
-                    throw new ArgumentOutOfRangeException("whereType");
+                    throw new ArgumentOutOfRangeException(nameof(whereType));
             }
         }
 
@@ -55,7 +55,7 @@ namespace Dapper.Criteria.Helpers.Where
         {
             if (!Enum.GetValues(typeof (WhereType)).Cast<WhereType>().Contains(whereType))
             {
-                throw new ArgumentOutOfRangeException("whereType");
+                throw new ArgumentOutOfRangeException(nameof(whereType));
             }
             return whereType.GetAttribute<DescriptionAttribute>().Description;
         }

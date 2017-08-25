@@ -19,7 +19,7 @@ namespace Dapper.Criteria.Helpers.Join
             {
                 return new ManyToManyClauseCreator();
             }
-            throw new ArgumentOutOfRangeException("joinAttributeType");
+            throw new ArgumentOutOfRangeException(nameof(joinAttributeType));
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using Dapper.Criteria.Formatters;
 using Dapper.Criteria.Metadata;
 using Dapper.Criteria.Models.Enumerations;

@@ -1,7 +1,9 @@
 ﻿using Dapper.Criteria.Models;
 using Dapper.Criteria.Tests.Alias.Criteria;
 using Dapper.Criteria.Tests.Utils;
+
 using FluentAssertions;
+
 using Xunit;
 
 namespace Dapper.Criteria.Tests.Alias
