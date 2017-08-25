@@ -28,15 +28,14 @@ namespace Dapper.Criteria.Helpers.Join
         {
             return joinAttribute.NoSplit
                        ? string.Empty
-                       : string.Format("SplitOn{0}{1}", joinAttribute.JoinedTable,
-                                       joinAttribute.JoinedTableField);
+                       : $"SplitOn{joinAttribute.JoinedTable}{joinAttribute.JoinedTableField}";
         }
 
         protected virtual string GetAddOnClauses(JoinAttribute joinAttribute)
         {
             return string.IsNullOrWhiteSpace(joinAttribute.AddOnClause)
                        ? string.Empty
-                       : string.Format(" AND {0}", joinAttribute.AddOnClause);
+                       : $" AND {joinAttribute.AddOnClause}";
         }
     }
 }

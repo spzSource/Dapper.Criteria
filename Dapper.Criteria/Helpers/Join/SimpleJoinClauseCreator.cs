@@ -22,21 +22,33 @@ namespace Dapper.Criteria.Helpers.Join
                 foreach (var tableSelectColumn in simpleJoinAttribute.TableSelectColumns)
                 {
                     selects.AddRange(
-                        tableSelectColumn.Value.Select(column =>
-                            {
-                                return column.IsExpression
-                                           ? column.Select
-                                           : string.Format("{0}.{1}", column.Table, column.Select);
-                            }));
+                        tableSelectColumn.Value.Select(column => column.IsExpression
+                            ? column.Select
+                            : $"{column.Table}.{column.Select}"));
                 }
             }
             else
             {
-                selects.Add(string.Format("{0}.*", simpleJoinAttribute.JoinedTable));
+                selects.Add(String.IsNullOrEmpty(simpleJoinAttribute.JoinedTableAlias)
+                    ? $"{simpleJoinAttribute.JoinedTable}.*"
+                    : $"{simpleJoinAttribute.JoinedTableAlias}.*");
             }
-            var joinSql = string.Format("{0} on {0}.{1} = {2}.{3}{4}", simpleJoinAttribute.JoinedTable,
-                simpleJoinAttribute.JoinedTableField, simpleJoinAttribute.CurrentTable,
-                simpleJoinAttribute.CurrentTableField, GetAddOnClauses(simpleJoinAttribute));
+
+            string joinSql;
+
+            if (String.IsNullOrEmpty(simpleJoinAttribute.JoinedTableAlias))
+            {
+                joinSql = string.Format("{0} on {0}.{1} = {2}.{3}{4}", simpleJoinAttribute.JoinedTable,
+                    simpleJoinAttribute.JoinedTableField, simpleJoinAttribute.CurrentTable,
+                    simpleJoinAttribute.CurrentTableField, GetAddOnClauses(simpleJoinAttribute));
+            }
+            else
+            {
+                joinSql = string.Format("{0} {1} on {1}.{2} = {3}.{4}{5}", simpleJoinAttribute.JoinedTable, 
+                    simpleJoinAttribute.JoinedTableAlias,
+                    simpleJoinAttribute.JoinedTableField, simpleJoinAttribute.CurrentTableAlias,
+                    simpleJoinAttribute.CurrentTableField, GetAddOnClauses(simpleJoinAttribute));
+            }
 
             var result = new JoinClause
             {

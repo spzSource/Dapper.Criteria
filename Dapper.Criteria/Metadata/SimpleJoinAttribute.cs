@@ -12,6 +12,8 @@ namespace Dapper.Criteria.Metadata
         public readonly string JoinedTable;
         private Type _parserType;
 
+        public readonly string JoinedTableAlias;
+
         private IDictionary<string, ICollection<SelectClause>> _tableSelectColumns;
         private string _joinedTableField;
 
@@ -19,6 +21,14 @@ namespace Dapper.Criteria.Metadata
             : base(currentTableField, joinType)
         {
             JoinedTable = joinedTable;
+            JoinedTableAlias = null;
+        }
+
+        public SimpleJoinAttribute(string currentTableField, JoinType joinType, string joinedTable, string joinedTableAlias)
+            : base(currentTableField, joinType)
+        {
+            JoinedTable = joinedTable;
+            JoinedTableAlias = joinedTableAlias;
         }
 
         public IDictionary<string, ICollection<SelectClause>> TableSelectColumns

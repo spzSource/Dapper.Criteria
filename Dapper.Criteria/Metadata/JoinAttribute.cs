@@ -16,6 +16,8 @@ namespace Dapper.Criteria.Metadata
 
         public string CurrentTable { get; set; }
 
+        public string CurrentTableAlias { get; set; }
+
         public string CurrentTableField { get; set; }
 
         public int Order { get; set; }

@@ -14,7 +14,7 @@ namespace Dapper.Criteria.Helpers.Join
             _joinClauseCreatorFactory = joinClauseCreatorFactory;
         }
 
-        public IEnumerable<JoinClause> Get(Models.Criteria criteria, string criteriaTableName, string alias)
+        public IEnumerable<JoinClause> Get(Models.Criteria criteria, string criteriaTableName, string criteriaTableAlias)
         {
             var type = criteria.GetType();
             var props = type.GetProperties().Where(pi => pi.HasAttribute<JoinAttribute>());
@@ -70,6 +70,10 @@ namespace Dapper.Criteria.Helpers.Join
                             continue;
                         }
                     }
+
+                    joinAttribute.CurrentTableAlias = String.IsNullOrWhiteSpace(joinAttribute.CurrentTableAlias)
+                        ? criteriaTableAlias
+                        : joinAttribute.CurrentTableAlias;
 
                     joinAttribute.CurrentTable = string.IsNullOrWhiteSpace(joinAttribute.CurrentTable)
                                                      ? criteriaTableName
