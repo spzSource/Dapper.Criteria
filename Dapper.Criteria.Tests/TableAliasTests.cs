@@ -15,7 +15,7 @@ namespace Dapper.Criteria.Tests
         [Where(TableAlias = "[tn]")]
         public int? Id { get; set; }
 
-        [Where(WhereType = WhereType.Like)]
+        [Where(WhereType = WhereType.Like, TableAlias = "[tn]")]
         public string Name { get; set; }
     }
 
@@ -26,11 +26,12 @@ namespace Dapper.Criteria.Tests
         {
             QueryBuilder<TestCriteria> builder = new QueryBuilder<TestCriteria>(new TestCriteria
             {
-                Id = 1
+                Id = 1,
+                Name = "Lala"
             });
             Query query = builder.Build();
 
-            Assert.Equal("SELECT [tn].* FROM TableName [tn] WHERE [tn].Id = @tnId", SimplifyString(query.Sql));
+            Assert.Equal("SELECT [tn].* FROM TableName [tn] WHERE [tn].Id = @tnId AND [tn].Name Like @tnName", SimplifyString(query.Sql));
         }
 
         private static string SimplifyString(string str)
