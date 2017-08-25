@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsSoft.Dapper.QueryBuilder")]
+[assembly: AssemblyTitle("Dapper.Criteria")]
 [assembly: AssemblyDescription("Library lets to build sql queries for Dapper in a declarative manner by using criteria classes with attributes applied to thier properties")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("TS Soft")]
