@@ -17,7 +17,8 @@ namespace Dapper.Criteria.Helpers.Where
             _whereAttributeManager = whereAttributeManager;
         }
 
-        public IEnumerable<WhereClause> Get(Models.Criteria criteria, string criteriaTableName, string alias)
+        public IEnumerable<WhereClause> Get(
+            Models.Criteria criteria, string criteriaTableName, string criteriaTableAlias)
         {
             var type = criteria.GetType();
             var propertyInfos = type.GetProperties()
@@ -37,9 +38,13 @@ namespace Dapper.Criteria.Helpers.Where
                 }
                 foreach (var whereAttribute in whereAttributes)
                 {
-                    string tableName = String.Empty;
+                    string tableName;
 
-                    if (!String.IsNullOrEmpty(whereAttribute.TableAlias))
+                    if (!String.IsNullOrEmpty(criteriaTableAlias))
+                    {
+                        tableName = criteriaTableAlias;
+                    }
+                    else if (!String.IsNullOrEmpty(whereAttribute.TableAlias))
                     {
                         tableName = whereAttribute.TableAlias;
                     }
@@ -81,7 +86,7 @@ namespace Dapper.Criteria.Helpers.Where
 
         private static string GetNameForReplace(string replaced)
         {
-            return string.Format("/**{0}**/", replaced);
+            return $"/**{replaced}**/";
         }
 
         private static void SetValueByWhereType(WhereType whereType, ref object value, IFormatter formatter = null)
