@@ -14,7 +14,7 @@ namespace Dapper.Criteria.Helpers.Join
             _joinClauseCreatorFactory = joinClauseCreatorFactory;
         }
 
-        public IEnumerable<JoinClause> Get(Models.Criteria criteria, string criteriaTableName)
+        public IEnumerable<JoinClause> Get(Models.Criteria criteria, string criteriaTableName, string alias)
         {
             var type = criteria.GetType();
             var props = type.GetProperties().Where(pi => pi.HasAttribute<JoinAttribute>());

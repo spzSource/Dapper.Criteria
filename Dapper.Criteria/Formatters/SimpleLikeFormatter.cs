@@ -4,7 +4,7 @@
     {
         public void Format(ref object input)
         {
-            input = string.Format("%{0}%", input);
+            input = $"%{input}%";
         }
     }
 }

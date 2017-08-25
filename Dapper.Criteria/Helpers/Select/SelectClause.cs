@@ -31,6 +31,8 @@
 
         public string Table { get; set; }
 
+        public string Alias { get; set; }
+
         public bool IsExpression { get; set; }
 
         protected bool Equals(SelectClause other)

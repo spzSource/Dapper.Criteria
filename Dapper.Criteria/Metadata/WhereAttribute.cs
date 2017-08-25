@@ -23,5 +23,7 @@ namespace Dapper.Criteria.Metadata
         public WhereType WhereType { get; set; }
 
         public string TableName { get; set; }
+
+        public string TableAlias { get; set; }
     }
 }

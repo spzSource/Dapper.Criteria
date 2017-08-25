@@ -8,7 +8,7 @@ namespace Dapper.Criteria.Helpers.Select
 {
     public class SelectClauseManager : IClauseManager<SelectClause>
     {
-        public IEnumerable<SelectClause> Get(Models.Criteria criteria, string tableName)
+        public IEnumerable<SelectClause> Get(Models.Criteria criteria, string tableName, string alias)
         {
             var res = new List<SelectClause>();
             if (criteria.SelectClause != null)
@@ -17,10 +17,12 @@ namespace Dapper.Criteria.Helpers.Select
                 {
                     IsExpression = criteria.SelectClause.IsExpression,
                     Select = criteria.SelectClause.Select,
-                    Table =
-                        !string.IsNullOrWhiteSpace(criteria.SelectClause.Table)
+                    Table = !string.IsNullOrWhiteSpace(criteria.SelectClause.Table)
                             ? criteria.SelectClause.Table
                             : tableName,
+                    Alias = !string.IsNullOrWhiteSpace(criteria.SelectClause.Alias)
+                        ? criteria.SelectClause.Alias
+                        : alias
                 });
             }
             if (criteria.QueryType == QueryType.Sum)
@@ -31,9 +33,9 @@ namespace Dapper.Criteria.Helpers.Select
             var props = type.GetProperties().Where(pi => pi.HasAttribute<AddSelectAttribute>());
             foreach (var propertyInfo in props)
             {
-                var propIsBool = propertyInfo.PropertyType == typeof (bool);
-                var propIsNullable = propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof (Nullable<>);
-                var propIsString = propertyInfo.PropertyType == typeof (string);
+                var propIsBool = propertyInfo.PropertyType == typeof(bool);
+                var propIsNullable = propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+                var propIsString = propertyInfo.PropertyType == typeof(string);
                 if (!propIsBool && !propIsString && !propIsNullable)
                 {
                     throw new NotImplementedException("Select implemented to only bool or string or nullable properties");
@@ -41,7 +43,7 @@ namespace Dapper.Criteria.Helpers.Select
                 var addSelectAttribute = propertyInfo.GetCustomAttribute<AddSelectAttribute>();
                 if (propIsBool)
                 {
-                    if (!(bool) propertyInfo.GetValue(criteria, null))
+                    if (!(bool)propertyInfo.GetValue(criteria, null))
                     {
                         continue;
                     }
@@ -63,7 +65,7 @@ namespace Dapper.Criteria.Helpers.Select
                 }
                 else if (propIsString)
                 {
-                    var str = (string) propertyInfo.GetValue(criteria, null);
+                    var str = (string)propertyInfo.GetValue(criteria, null);
                     if (string.IsNullOrWhiteSpace(str))
                     {
                         continue;

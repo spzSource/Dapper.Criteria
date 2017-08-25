@@ -17,13 +17,13 @@ namespace Dapper.Criteria
     public class QueryBuilder<TCriteria> where TCriteria : Models.Criteria
     {
         private const string SimpleSqlTemplate =
-            @"Select /**select**/ from {0} /**simplesql**/ /**where**/ /**groupby**/ /**orderby**/";
+            @"SELECT /**select**/ FROM {0} {1} /**simplesql**/ /**where**/ /**groupby**/ /**orderby**/";
 
-        private const string ExistsSqlTemplate = "Select 1 from {0} /**simplesql**/ /**where**/";
-        private const string CountSqlTemplate = "Select count(1) from {0} /**simplesql**/ /**where**/";
+        private const string ExistsSqlTemplate = "SELECT 1 FROM {0} {1} /**simplesql**/ /**where**/";
+        private const string CountSqlTemplate = "SELECT COUNT(1) FROM {0} {1} /**simplesql**/ /**where**/";
 
         private const string PaginateSqlTemplate =
-            @"Select /**select**/ from {0} /**simplesql**/ /**where**/ /**groupby**/ /**orderby**/ OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY";
+            @"SELECT /**select**/ FROM {0} {1} /**simplesql**/ /**where**/ /**groupby**/ /**orderby**/ OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY";
 
         private readonly TableAttribute _table;
         private static readonly Type CriteriaType = typeof (TCriteria);
@@ -73,7 +73,13 @@ namespace Dapper.Criteria
             {
                 _tableName = _table.Name;
             }
+
             return _tableName;
+        }
+
+        protected virtual string GetAlias()
+        {
+            return _table.Alias;
         }
 
         protected virtual string GetSimpleSql()
@@ -81,7 +87,8 @@ namespace Dapper.Criteria
             return
                 string.Format(
                     SimpleSqlTemplate,
-                    GetTableName());
+                    GetTableName(),
+                    GetAlias());
         }
 
         protected virtual string GetPaginateSql()
@@ -89,41 +96,44 @@ namespace Dapper.Criteria
             return
                 string.Format(
                     PaginateSqlTemplate,
-                    GetTableName());
+                    GetTableName(),
+                    GetAlias());
         }
 
         protected virtual string GetCountSql()
         {
-            return string.Format(CountSqlTemplate, GetTableName());
+            return string.Format(CountSqlTemplate, GetTableName(), GetAlias());
         }
 
         protected virtual string GetExistsSql()
         {
-            return string.Format(ExistsSqlTemplate, GetTableName());
+            return string.Format(ExistsSqlTemplate, GetTableName(), GetAlias());
         }
 
         protected virtual void Select(TCriteria criteria)
         {
-            var selects = SelectClauseManager.Get(criteria, GetTableName());
+            var selects = SelectClauseManager.Get(criteria, GetTableName(), GetAlias());
             foreach (var selectClause in selects)
             {
                 Builder.Select(
                     selectClause.IsExpression
                         ? selectClause.Select
-                        : string.Format("{0}.{1}", selectClause.Table, selectClause.Select));
+                        : selectClause.Alias != null
+                            ? $"{selectClause.Alias}.{selectClause.Select}"
+                            : $"{selectClause.Table}.{selectClause.Select}");
             }
         }
 
         protected virtual void Join(TCriteria criteria)
         {
             IEnumerable<JoinClause> joinClauses =
-                JoinClauseManager.Get(criteria, GetTableName())
+                JoinClauseManager.Get(criteria, GetTableName(), GetAlias())
                     .OrderBy(x => x.Order == 0 ? int.MaxValue : x.Order);
             foreach (var joinClause in joinClauses)
             {
                 if (!string.IsNullOrWhiteSpace(joinClause.Splitter) && criteria.QueryType != QueryType.Sum)
                 {
-                    Builder.Select(string.Format("0 as {0}", joinClause.Splitter));                    
+                    Builder.Select($"0 as {joinClause.Splitter}");                    
                 }
                 if (joinClause.HasJoin)
                 {
@@ -164,7 +174,7 @@ namespace Dapper.Criteria
 
         protected virtual void Where(TCriteria criteria)
         {
-            var whereClauses = WhereClauseManager.Get(criteria, GetTableName());
+            var whereClauses = WhereClauseManager.Get(criteria, GetTableName(), GetAlias());
             var dbArgs = new DynamicParameters();
 
 
@@ -197,7 +207,7 @@ namespace Dapper.Criteria
             {
                 foreach (var order in criteria.Order)
                 {
-                    Builder.OrderBy(string.Format("{0} {1}", order.Key, order.Value));
+                    Builder.OrderBy($"{order.Key} {order.Value}");
                 }
             }
         }

@@ -19,7 +19,7 @@ namespace Dapper.Criteria.Tests
         {
             var builder = new TestQueryBuilder<TestCriteria>(new TestCriteria());
             var query = builder.Build();
-            Assert.Equal("Select TableName.* from TableName", SimplifyString(query.Sql));
+            Assert.Equal("SELECT TableName.* FROM TableName", SimplifyString(query.Sql));
             Assert.Equal("Id", query.SplitOn);
             DynamicParameters tmp;
             Assert.NotNull((tmp = query.Parameters as DynamicParameters));
@@ -34,7 +34,7 @@ namespace Dapper.Criteria.Tests
                     Id = 1,
                 });
             var query = builder.Build();
-            Assert.Equal("Select TableName.* from TableName WHERE TableName.Id = @TableNameId",
+            Assert.Equal("SELECT TableName.* FROM TableName WHERE TableName.Id = @TableNameId",
                             SimplifyString(query.Sql));
             var dynamicParameters = ToDynamicParameters(query.Parameters);
             var parameters = GetKeyValues(dynamicParameters);
@@ -52,7 +52,7 @@ namespace Dapper.Criteria.Tests
                     Name = "123",
                 });
             var query = builder.Build();
-            Assert.Equal("Select TableName.* from TableName WHERE TableName.Name Like @TableNameName",
+            Assert.Equal("SELECT TableName.* FROM TableName WHERE TableName.Name Like @TableNameName",
                             SimplifyString(query.Sql));
             var dynamicParameters = ToDynamicParameters(query.Parameters);
             var parameters = GetKeyValues(dynamicParameters);
@@ -71,7 +71,7 @@ namespace Dapper.Criteria.Tests
                 };
             var builder = new TestQueryBuilder<TestCriteria>(crit);
             var query = builder.Build();
-            Assert.Equal("Select TableName.* from TableName WHERE TableName.Date >= @TableNameDateFrom",
+            Assert.Equal("SELECT TableName.* FROM TableName WHERE TableName.Date >= @TableNameDateFrom",
                             SimplifyString(query.Sql));
             var dynamicParameters = ToDynamicParameters(query.Parameters);
             var parameters = GetKeyValues(dynamicParameters);
@@ -91,7 +91,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select TableName.* from TableName WHERE TableName.Date >= @TableNameDateFrom AND TableName.Date <= @TableNameDateTo",
+                "SELECT TableName.* FROM TableName WHERE TableName.Date >= @TableNameDateFrom AND TableName.Date <= @TableNameDateTo",
                 SimplifyString(query.Sql));
             var dynamicParameters = ToDynamicParameters(query.Parameters);
             var parameters = GetKeyValues(dynamicParameters);
@@ -112,7 +112,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select TableName.* from TableName WHERE TableName.Code in @TableNameCodes",
+                "SELECT TableName.* FROM TableName WHERE TableName.Code in @TableNameCodes",
                 SimplifyString(query.Sql));
 
             var dynamicParameters = ToDynamicParameters(query.Parameters);
@@ -133,7 +133,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select TableName.* from TableName WHERE ((TableName.Date is not null and TableName.Date >= @TableNameDateWithExpression) or (TableName.DateSecond >= @TableNameDateWithExpression))"
+                "SELECT TableName.* FROM TableName WHERE ((TableName.Date is not null and TableName.Date >= @TableNameDateWithExpression) or (TableName.DateSecond >= @TableNameDateWithExpression))"
                 , SimplifyString(query.Sql));
             var dynamicParameters = ToDynamicParameters(query.Parameters);
             var parameters = GetKeyValues(dynamicParameters);
@@ -152,7 +152,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select TableName.* from TableName WHERE TableName.DateTimeWithFormatter = @TableNameDateTimeWithFormatter"
+                "SELECT TableName.* FROM TableName WHERE TableName.DateTimeWithFormatter = @TableNameDateTimeWithFormatter"
                 , SimplifyString(query.Sql));
             var dynamicParameters = ToDynamicParameters(query.Parameters);
             var parameters = GetKeyValues(dynamicParameters);
@@ -171,7 +171,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestJoinCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select TableName.* , 0 as SplitOnAnotherTableCurrentTableId , AnotherTable.* from TableName LEFT JOIN AnotherTable on AnotherTable.CurrentTableId = TableName.CurrentTableId"
+                "SELECT TableName.* , 0 as SplitOnAnotherTableCurrentTableId , AnotherTable.* FROM TableName LEFT JOIN AnotherTable on AnotherTable.CurrentTableId = TableName.CurrentTableId"
                 , SimplifyString(query.Sql)
                 );
         }
@@ -186,7 +186,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestJoinCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select TableName.* , 0 as SplitOnAnotherTableCurrentTableId from TableName"
+                "SELECT TableName.* , 0 as SplitOnAnotherTableCurrentTableId FROM TableName"
                 , SimplifyString(query.Sql)
                 );
         }
@@ -201,7 +201,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestManyToManyJoinCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select TableName.* , 0 as SplitOnAnotherTableAnotherId , AnotherTable.* from TableName " +
+                "SELECT TableName.* , 0 as SplitOnAnotherTableAnotherId , AnotherTable.* FROM TableName " +
                 "LEFT JOIN AnotherTableCurrentTable on AnotherTableCurrentTable.CurrentId = TableName.CurrentId " +
                 "LEFT JOIN AnotherTable on AnotherTable.AnotherId = AnotherTableCurrentTable.AnotherId"
                 , SimplifyString(query.Sql)
@@ -218,7 +218,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestManyToManyJoinCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select TableName.* , 0 as SplitOnAnotherTableAnotherId from TableName"
+                "SELECT TableName.* , 0 as SplitOnAnotherTableAnotherId FROM TableName"
                 , SimplifyString(query.Sql)
                 );
         }
@@ -235,7 +235,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestJoinOrderCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Persons.* , 0 as SplitOnCarsPersonId , Cars.* , 0 as SplitOnAirplansPersonId , Airplans.* , 0 as SplitOnHousesPersonId , Houses.* from Persons " +
+                "SELECT Persons.* , 0 as SplitOnCarsPersonId , Cars.* , 0 as SplitOnAirplansPersonId , Airplans.* , 0 as SplitOnHousesPersonId , Houses.* FROM Persons " +
                 "LEFT JOIN Cars on Cars.PersonId = Persons.Id " +
                 "LEFT JOIN Airplans on Airplans.PersonId = Persons.Id " +
                 "LEFT JOIN Houses on Houses.PersonId = Persons.Id"
@@ -255,7 +255,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestSelectCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Shipments.Name , Shipments.Mass , Sum(Shipments.Price) from Shipments",
+                "SELECT Shipments.Name , Shipments.Mass , Sum(Shipments.Price) FROM Shipments",
                 SimplifyString(query.Sql));
         }
 
@@ -270,7 +270,7 @@ namespace Dapper.Criteria.Tests
             var builder = new QueryBuilder<TestAnotherJoinCriteria>(criteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* , 0 as SplitOnPersonsHouseId , Persons.* , 0 as SplitOnOwnersId , Owners.* from Houses LEFT JOIN Persons on Persons.HouseId = Houses.Id INNER JOIN Owners on Owners.Id = Houses.OwnerId",
+                "SELECT Houses.* , 0 as SplitOnPersonsHouseId , Persons.* , 0 as SplitOnOwnersId , Owners.* FROM Houses LEFT JOIN Persons on Persons.HouseId = Houses.Id INNER JOIN Owners on Owners.Id = Houses.OwnerId",
                 SimplifyString(query.Sql));
         }
 
@@ -322,7 +322,7 @@ namespace Dapper.Criteria.Tests
             var builder = new QueryBuilder<TestMultipleJoinCriteria>(criteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* , 0 as SplitOnPersonsHouseId , Persons.* , 0 as SplitOnPersonInfosPersonId , PersonInfos.* from Houses LEFT JOIN Persons on Persons.HouseId = Houses.Id INNER JOIN PersonInfos on PersonInfos.PersonId = Persons.Id",
+                "SELECT Houses.* , 0 as SplitOnPersonsHouseId , Persons.* , 0 as SplitOnPersonInfosPersonId , PersonInfos.* FROM Houses LEFT JOIN Persons on Persons.HouseId = Houses.Id INNER JOIN PersonInfos on PersonInfos.PersonId = Persons.Id",
                 SimplifyString(query.Sql));
         }
 
@@ -336,7 +336,7 @@ namespace Dapper.Criteria.Tests
             var builder = new QueryBuilder<TestWhereBoolCriteria>(criteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* from Houses WHERE (Houses.FloorsCount = 1)",
+                "SELECT Houses.* FROM Houses WHERE (Houses.FloorsCount = 1)",
                 SimplifyString(query.Sql));
         }
 
@@ -350,7 +350,7 @@ namespace Dapper.Criteria.Tests
             var builder = new QueryBuilder<TestWhereBoolCriteria>(criteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* from Houses",
+                "SELECT Houses.* FROM Houses",
                 SimplifyString(query.Sql));
         }
 
@@ -362,7 +362,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<SquareBracketsTableNameTestCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select [TestTable].* from [TestTable] WHERE [TestTable].TestProperty = @TestTableTestPropertyId",
+                "SELECT [TestTable].* FROM [TestTable] WHERE [TestTable].TestProperty = @TestTableTestPropertyId",
                 SimplifyString(query.Sql));
         }
 
@@ -508,7 +508,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestWhereMultipleCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* from Houses WHERE Houses.OwnerId = @HousesHasOwnerNotThis AND Houses.OwnerId is not null",
+                "SELECT Houses.* FROM Houses WHERE Houses.OwnerId = @HousesHasOwnerNotThis AND Houses.OwnerId is not null",
                 SimplifyString(query.Sql));
         }
 
@@ -534,7 +534,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestIncludingCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* , 0 as SplitOnOwnersId , Owners.* from Houses LEFT JOIN Owners on Owners.Id = Houses.OwnerId WHERE Owners.OwnerName Like @OwnersOwnerName",
+                "SELECT Houses.* , 0 as SplitOnOwnersId , Owners.* FROM Houses LEFT JOIN Owners on Owners.Id = Houses.OwnerId WHERE Owners.OwnerName Like @OwnersOwnerName",
                 SimplifyString(query.Sql));
         }
 
@@ -549,7 +549,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<TestIncludingCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* , 0 as SplitOnOwnersId from Houses LEFT JOIN Owners on Owners.Id = Houses.OwnerId WHERE Owners.OwnerName Like @OwnersOwnerName",
+                "SELECT Houses.* , 0 as SplitOnOwnersId FROM Houses LEFT JOIN Owners on Owners.Id = Houses.OwnerId WHERE Owners.OwnerName Like @OwnersOwnerName",
                 SimplifyString(query.Sql));
         }
         [Table("Houses")]
@@ -569,7 +569,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<JoinWithoutJoinedFieldCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* , 0 as SplitOnPersonsHouseId , Persons.* from Houses LEFT JOIN Persons on Persons.HouseId = Houses.HouseId",
+                "SELECT Houses.* , 0 as SplitOnPersonsHouseId , Persons.* FROM Houses LEFT JOIN Persons on Persons.HouseId = Houses.HouseId",
                 SimplifyString(query.Sql));
         }
 
@@ -583,7 +583,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<JoinNoSplitCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* , 0 as SplitOnOwnersId from Houses LEFT JOIN HouseOwners on HouseOwners.HouseId = Houses.Id WHERE HouseOwners.OwnerId = @HouseOwnersOwnerId",
+                "SELECT Houses.* , 0 as SplitOnOwnersId FROM Houses LEFT JOIN HouseOwners on HouseOwners.HouseId = Houses.Id WHERE HouseOwners.OwnerId = @HouseOwnersOwnerId",
                 SimplifyString(query.Sql));
             Assert.Equal("SplitOnOwnersId", query.SplitOn);
             
@@ -610,7 +610,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<JoinNoSplitCriteria2>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* from Houses LEFT JOIN HouseOwners on HouseOwners.HouseId = Houses.Id WHERE HouseOwners.OwnerId = @HouseOwnersOwnerId",
+                "SELECT Houses.* FROM Houses LEFT JOIN HouseOwners on HouseOwners.HouseId = Houses.Id WHERE HouseOwners.OwnerId = @HouseOwnersOwnerId",
                 SimplifyString(query.Sql));
             Assert.Equal("", query.SplitOn);
 
@@ -641,7 +641,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<JoinAddOnCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* , 0 as SplitOnOwnersHouseId from Houses LEFT JOIN Owners on Owners.HouseId = Houses.HouseId AND Owners.OwnerId in (1,2,3)",
+                "SELECT Houses.* , 0 as SplitOnOwnersHouseId FROM Houses LEFT JOIN Owners on Owners.HouseId = Houses.HouseId AND Owners.OwnerId in (1,2,3)",
                 SimplifyString(query.Sql));
             
         }
@@ -656,7 +656,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<JoinAddOnTypeCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* , 0 as SplitOnPeoplePeopleId , People.* from Houses LEFT JOIN HousePeople on HousePeople.HouseId = Houses.HouseId AND HousesPeople.Required = 1 LEFT JOIN People on People.PeopleId = HousePeople.PeopleId",
+                "SELECT Houses.* , 0 as SplitOnPeoplePeopleId , People.* FROM Houses LEFT JOIN HousePeople on HousePeople.HouseId = Houses.HouseId AND HousesPeople.Required = 1 LEFT JOIN People on People.PeopleId = HousePeople.PeopleId",
                 SimplifyString(query.Sql));
 
         }
@@ -678,7 +678,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<SelectNullableCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* , Houses.Name from Houses WHERE Houses.Id = @HousesId",
+                "SELECT Houses.* , Houses.Name FROM Houses WHERE Houses.Id = @HousesId",
                 SimplifyString(query.Sql));
         }
 
@@ -691,7 +691,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<SelectNullableCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* from Houses",
+                "SELECT Houses.* FROM Houses",
                 SimplifyString(query.Sql));
         }
 
@@ -714,7 +714,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<JoinSelectCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* , 0 as SplitOnOwnersHouseId , Owners.Name , Owners.Id , Type as OwnerType from Houses LEFT JOIN Owners on Owners.HouseId = Houses.HouseId",
+                "SELECT Houses.* , 0 as SplitOnOwnersHouseId , Owners.Name , Owners.Id , Type as OwnerType FROM Houses LEFT JOIN Owners on Owners.HouseId = Houses.HouseId",
                 SimplifyString(query.Sql));
         }
 
@@ -738,7 +738,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<JoinReferenceCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Houses.* from Houses LEFT JOIN Owners on Owners.HouseId = Houses.HouseId WHERE Owners.Id in @OwnersOwnerIds",
+                "SELECT Houses.* FROM Houses LEFT JOIN Owners on Owners.HouseId = Houses.HouseId WHERE Owners.Id in @OwnersOwnerIds",
                 SimplifyString(query.Sql));
         }
 
@@ -765,7 +765,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<GroupByCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select Count(1) , Houses.OwnerId , Houses.Category from Houses GROUP BY Houses.OwnerId , Houses.Category",
+                "SELECT Count(1) , Houses.OwnerId , Houses.Category FROM Houses GROUP BY Houses.OwnerId , Houses.Category",
                 SimplifyString(query.Sql));
         }
 
@@ -786,7 +786,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<BaseCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select RealHouses.* , 0 as SplitOnCustomersCustomerId , Customers.* from RealHouses INNER JOIN Customers on Customers.CustomerId = RealHouses.CustomerId WHERE RealHouses.HouseId = @RealHousesId AND RealHouses.CustomerId = @RealHousesCustomerId",
+                "SELECT RealHouses.* , 0 as SplitOnCustomersCustomerId , Customers.* FROM RealHouses INNER JOIN Customers on Customers.CustomerId = RealHouses.CustomerId WHERE RealHouses.HouseId = @RealHousesId AND RealHouses.CustomerId = @RealHousesCustomerId",
                 SimplifyString(query.Sql));
         }
 
@@ -803,7 +803,7 @@ namespace Dapper.Criteria.Tests
             var builder = new TestQueryBuilder<SumCriteria>(testCriteria);
             var query = builder.Build();
             Assert.Equal(
-                "Select sum(Houses.Price) from Houses INNER JOIN Customers on Customers.CustomerId = Houses.CustomerId WHERE Houses.Id in @HousesIds",
+                "SELECT sum(Houses.Price) FROM Houses INNER JOIN Customers on Customers.CustomerId = Houses.CustomerId WHERE Houses.Id in @HousesIds",
                 SimplifyString(query.Sql));
         }
 

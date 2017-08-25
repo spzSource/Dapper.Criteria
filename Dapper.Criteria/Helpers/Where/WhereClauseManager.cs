@@ -17,7 +17,7 @@ namespace Dapper.Criteria.Helpers.Where
             _whereAttributeManager = whereAttributeManager;
         }
 
-        public IEnumerable<WhereClause> Get(Models.Criteria criteria, string criteriaTableName)
+        public IEnumerable<WhereClause> Get(Models.Criteria criteria, string criteriaTableName, string alias)
         {
             var type = criteria.GetType();
             var propertyInfos = type.GetProperties()
@@ -37,13 +37,21 @@ namespace Dapper.Criteria.Helpers.Where
                 }
                 foreach (var whereAttribute in whereAttributes)
                 {
-                    var tableName = !string.IsNullOrWhiteSpace(whereAttribute.TableName)
-                        ? whereAttribute.TableName
-                        : criteriaTableName;
+                    string tableName = String.Empty;
 
-                    var paramName = string.Format("@{0}{1}", NormalizeTableName(tableName),
-                        propertyInfo.Name);
-                    var str = GeWheretSting(whereAttribute, propertyInfo, tableName, paramName, ref value);
+                    if (!String.IsNullOrEmpty(whereAttribute.TableAlias))
+                    {
+                        tableName = whereAttribute.TableAlias;
+                    }
+                    else
+                    {
+                        tableName = !string.IsNullOrWhiteSpace(whereAttribute.TableName)
+                            ? whereAttribute.TableName
+                            : criteriaTableName;
+                    }
+                    
+                    string paramName = $"@{NormalizeTableName(tableName)}{propertyInfo.Name}";
+                    string str = GeWheretSting(whereAttribute, propertyInfo, tableName, paramName, ref value);
                     whereClauses.Add(new WhereClause
                     {
                         ParameterName = paramName,
@@ -110,8 +118,7 @@ namespace Dapper.Criteria.Helpers.Where
             SetValueByWhereType(whereAttribute.WhereType, ref value, formatter);
             if (string.IsNullOrWhiteSpace(whereAttribute.Expression))
             {
-                str = string.Format("{0}.{1} {2} ", tableName, fieldName
-                    , _whereAttributeManager.GetExpression(whereAttribute.WhereType, paramName));
+                str = $"{tableName}.{fieldName} {_whereAttributeManager.GetExpression(whereAttribute.WhereType, paramName)} ";
             }
             else
             {
@@ -119,7 +126,7 @@ namespace Dapper.Criteria.Helpers.Where
                     _whereAttributeManager.GetSelector(
                         whereAttribute.WhereType),
                     paramName);
-                str = string.Format("({0})", whereString);
+                str = $"({whereString})";
             }
             return str;
         }
