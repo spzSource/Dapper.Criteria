@@ -96,7 +96,7 @@ QueryBuilder<TestJoinCriteria> builder = new QueryBuilder<TestJoinCriteria>(
 Query query = builder.Build();
 
 ```
-Produced sql
+Produced sql:
 
 ```TSQL
 SELECT 
