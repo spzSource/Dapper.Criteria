@@ -1,6 +1,6 @@
 Dapper.Criteria
 ==========================
-Library lets to build sql queries for Dapper in a declarative manner by using criteria class with attributes applied to thier properties.
+Library lets to build sql queries for Dapper in a declarative manner by using criteria class with attributes applied to properties.
 
 
 Examples
