@@ -8,7 +8,7 @@ namespace Dapper.Criteria.Helpers.Select
 {
     public class SelectClauseManager : IClauseManager<SelectClause>
     {
-        public IEnumerable<SelectClause> Get(Models.Criteria criteria, string tableName, string alias)
+        public IEnumerable<SelectClause> Get(Models.Criteria criteria, string tableName, string criteriaTableAlias)
         {
             var res = new List<SelectClause>();
             if (criteria.SelectClause != null)
@@ -22,7 +22,7 @@ namespace Dapper.Criteria.Helpers.Select
                             : tableName,
                     Alias = !string.IsNullOrWhiteSpace(criteria.SelectClause.Alias)
                         ? criteria.SelectClause.Alias
-                        : alias
+                        : criteriaTableAlias
                 });
             }
             if (criteria.QueryType == QueryType.Sum)

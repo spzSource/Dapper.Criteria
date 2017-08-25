@@ -45,7 +45,7 @@ namespace Dapper.Criteria.Helpers.Where
                 case WhereType.In:
                 case WhereType.Like:
                 case WhereType.NotIn:
-                    return string.Format("{0} {1}", GetSelector(whereType), paramName);
+                    return $"{GetSelector(whereType)} {paramName}";
                 default:
                     throw new ArgumentOutOfRangeException("whereType");
             }

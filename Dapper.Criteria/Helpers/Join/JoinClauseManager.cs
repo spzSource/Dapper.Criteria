@@ -50,7 +50,7 @@ namespace Dapper.Criteria.Helpers.Join
                         var includedProp = props.SingleOrDefault(x => x.Name == joinAttribute.Including);
                         if (includedProp == null)
                         {
-                            throw new Exception(string.Format("Property {0} not found", joinAttribute.Including));
+                            throw new Exception($"Property {joinAttribute.Including} not found");
                         }
                         var includedPropIsNullable = includedProp.PropertyType == typeof(string) ||
                                                      includedProp.PropertyType.IsGenericType &&

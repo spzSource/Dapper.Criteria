@@ -28,12 +28,12 @@ namespace Dapper.Criteria.Helpers.Join
                                 selectClause =>
                                     selectClause.IsExpression
                                         ? selectClause.Select
-                                        : string.Format("{0}.{1}", selectClause.Table, selectClause.Select)));
+                                        : $"{selectClause.Table}.{selectClause.Select}"));
                 }
             }
             else
             {
-                selects.Add(string.Format("{0}.*", manyToManyJoinAttribute.JoinedTable));
+                selects.Add($"{manyToManyJoinAttribute.JoinedTable}.*");
             }
 
             var joins = new List<string>

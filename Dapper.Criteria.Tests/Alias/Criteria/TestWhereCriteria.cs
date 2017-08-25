@@ -6,10 +6,10 @@ namespace Dapper.Criteria.Tests.Alias.Criteria
     [Table(Name = "TableName", Alias = "[tn]")]
     internal class TestWhereCriteria : Models.Criteria
     {
-        [Where(TableAlias = "[tn]")]
+        [Where]
         public int? Id { get; set; }
 
-        [Where(WhereType = WhereType.Like, TableAlias = "[tn]")]
+        [Where(WhereType = WhereType.Like)]
         public string Name { get; set; }
     }
 }

@@ -29,6 +29,8 @@ namespace Dapper.Criteria.Tests.Alias
                     FROM TableName [tn] 
                     WHERE [tn].Id = @tnId 
                         AND [tn].Name Like @tnName".Simplify());
+            
+            
         }
 
         [Fact]

@@ -48,8 +48,7 @@ namespace Dapper.Criteria
                 (TableAttribute) criteria.GetType().GetCustomAttributes(typeof (TableAttribute), false).FirstOrDefault();
             if (_table == null)
             {
-                throw new NullReferenceException(string.Format("Not exists table from criteria {0}",
-                    CriteriaType));
+                throw new NullReferenceException($"Not exists table from criteria {CriteriaType}");
             }
             Builder = new SqlBuilder();
             Criteria = criteria;
