@@ -1,4 +1,4 @@
-Dapper.Criteria
+Dapper.Criteria [![Build status](https://ci.appveyor.com/api/projects/status/fh37rvrq5jyvw14o?svg=true)](https://ci.appveyor.com/project/spzSource/dapper-criteria)
 ==========================
 Library lets to build sql queries for Dapper in a declarative manner by using criteria class with attributes applied to properties.
 
