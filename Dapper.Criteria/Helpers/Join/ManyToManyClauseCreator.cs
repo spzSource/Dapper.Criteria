@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Dapper.Criteria.Metadata;
 using Dapper.Criteria.Models.Enumerations;
 
@@ -22,18 +23,18 @@ namespace Dapper.Criteria.Helpers.Join
             {
                 foreach (var tableSelectColumn in manyToManyJoinAttribute.TableSelectColumns)
                 {
-                    selects
-                        .AddRange(
-                            tableSelectColumn.Value.Select(
-                                selectClause =>
-                                    selectClause.IsExpression
-                                        ? selectClause.Select
-                                        : $"{selectClause.Table}.{selectClause.Select}"));
+                    selects.AddRange(
+                        tableSelectColumn.Value.Select(selectClause =>
+                            selectClause.IsExpression
+                                ? selectClause.Select
+                                : $"{selectClause.Table}.{selectClause.Select}"));
                 }
             }
             else
             {
-                selects.Add($"{manyToManyJoinAttribute.JoinedTable}.*");
+                selects.Add(!String.IsNullOrEmpty(manyToManyJoinAttribute.JoinedTableAlias)
+                    ? $"{manyToManyJoinAttribute.JoinedTableAlias}.*"
+                    : $"{manyToManyJoinAttribute.JoinedTable}.*");
             }
 
             var joins = new List<string>
@@ -53,21 +54,59 @@ namespace Dapper.Criteria.Helpers.Join
             return result;
         }
 
-        private string CreateJoinCommunication(ManyToManyJoinAttribute manyToManyJoinAttribute)
+        private string CreateJoinCommunication(ManyToManyJoinAttribute attribute)
         {
-            return string.Format("{0} on {0}.{1} = {2}.{3}{4}", manyToManyJoinAttribute.CommunicationTable,
-                                 manyToManyJoinAttribute.CommunicationTableCurrentTableField,
-                                 manyToManyJoinAttribute.CurrentTable,
-                                 manyToManyJoinAttribute.CurrentTableField,
-                                 manyToManyJoinAttribute.AddOnType == AddOnType.ForCommunication ? GetAddOnClauses(manyToManyJoinAttribute) : string.Empty);
+            if (!String.IsNullOrEmpty(attribute.CommunicationTableAlias))
+            {
+                return string.Format("{0} {1} on {1}.{2} = {3}.{4}{5}", 
+                    attribute.CommunicationTable,
+                    attribute.CommunicationTableAlias,
+                    attribute.CommunicationTableCurrentTableField,
+                    !String.IsNullOrEmpty(attribute.CurrentTableAlias) 
+                        ? attribute.CurrentTableAlias 
+                        : attribute.CurrentTable,
+                    attribute.CurrentTableField,
+                    attribute.AddOnType == AddOnType.ForCommunication
+                        ? GetAddOnClauses(attribute)
+                        : string.Empty);
+            }
+            
+            return string.Format("{0} on {0}.{1} = {2}.{3}{4}", 
+                attribute.CommunicationTable,
+                attribute.CommunicationTableCurrentTableField,
+                attribute.CurrentTable,
+                attribute.CurrentTableField,
+                attribute.AddOnType == AddOnType.ForCommunication
+                    ? GetAddOnClauses(attribute)
+                    : string.Empty);
+            
+            
         }
 
-        private string CreateJoinJoined(ManyToManyJoinAttribute manyToManyJoinAttribute)
+        private string CreateJoinJoined(ManyToManyJoinAttribute attribute)
         {
-            return string.Format("{0} on {0}.{1} = {2}.{3}{4}", manyToManyJoinAttribute.JoinedTable,
-                          manyToManyJoinAttribute.JoinedTableField, manyToManyJoinAttribute.CommunicationTable,
-                          manyToManyJoinAttribute.CommunicationTableJoinedTableField,
-                          manyToManyJoinAttribute.AddOnType == AddOnType.ForJoined ? GetAddOnClauses(manyToManyJoinAttribute) : string.Empty);
+            if (!String.IsNullOrEmpty(attribute.JoinedTableAlias))
+            {
+                return string.Format("{0} {1} on {1}.{2} = {3}.{4}{5}", 
+                    attribute.JoinedTable,
+                    attribute.JoinedTableAlias,
+                    attribute.JoinedTableField, 
+                    !String.IsNullOrEmpty(attribute.CommunicationTableAlias) 
+                        ? attribute.CommunicationTableAlias 
+                        : attribute.CommunicationTable,
+                    attribute.CommunicationTableJoinedTableField,
+                    attribute.AddOnType == AddOnType.ForJoined
+                        ? GetAddOnClauses(attribute)
+                        : string.Empty);
+            }
+            
+            return string.Format("{0} on {0}.{1} = {2}.{3}{4}", attribute.JoinedTable,
+                attribute.JoinedTableField, 
+                attribute.CommunicationTable,
+                attribute.CommunicationTableJoinedTableField,
+                attribute.AddOnType == AddOnType.ForJoined
+                    ? GetAddOnClauses(attribute)
+                    : string.Empty);
         }
     }
 }
