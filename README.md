@@ -8,7 +8,7 @@ Examples
 
 ### Where criteria:
 
-```C#
+```cs
 [Table(Name = "TableName", Alias = "[tn]")]
 public class TestWhereCriteria : Models.Criteria
 {
@@ -20,7 +20,7 @@ public class TestWhereCriteria : Models.Criteria
 }
 ```
 
-```C#
+```cs
 QueryBuilder<TestWhereCriteria> builder = new QueryBuilder<TestWhereCriteria>(
     new TestWhereCriteria
     {
@@ -33,7 +33,7 @@ Query query = builder.Build();
 ```
 Produced sql:
 
-```TSQL
+```sql
 SELECT 
     [tn].* 
 FROM TableName [tn]  
@@ -43,7 +43,7 @@ WHERE [tn].Id = @tnId
 
 ### SimpleJoin criteria:
 
-```C#
+```cs
 [Table(Name = "Persons", Alias = "[p]")]
 internal class TestJoinCriteria : Models.Criteria
 {
@@ -85,7 +85,7 @@ internal class TestJoinCriteria : Models.Criteria
 }
 ```
 
-```C#
+```cs
 QueryBuilder<TestJoinCriteria> builder = new QueryBuilder<TestJoinCriteria>(
     new TestJoinCriteria
     {
@@ -100,7 +100,7 @@ Query query = builder.Build();
 ```
 Produced sql:
 
-```TSQL
+```sql
 SELECT 
     [p].* , 0 as SplitOnCarsPersonId , 
     [c].* , 0 as SplitOnAirplansPersonId , 
@@ -112,4 +112,49 @@ FROM Persons [p]
     LEFT JOIN Airplans [a] on [a].PersonId = [p].Id
     LEFT JOIN Houses [h] on [h].PersonId = [p].Id
     LEFT JOIN Instruments [i] on [i].Instrument = [c].InstrId
+```
+
+### Many-to-many join criteria:
+
+```C#
+[Table(Name = "Persons", Alias = "[p]")]
+public class TestManyToManyJoinCriteria : Models.Criteria
+{
+    [ManyToManyJoin(
+        currentTableField: "CompanyId", 
+        joinType: JoinType.Left, 
+        joinedTable: "Company", 
+        joinedTableAlias: "[c]",
+        communicationTable: "CompanyPersons", 
+        communicationTableAlias: "[cp]",
+        communicationTableCurrentTableField: "PersonId",
+        communicationTableJoinedTableField: "CompanyId", 
+        JoinedTableField = "Id")]
+    public bool WithCompany { get; set; }
+
+    [Where]
+    public int? Id { get; set; }
+}
+```
+
+```cs
+QueryBuilder<TestManyToManyJoinCriteria> builder =
+    new QueryBuilder<TestManyToManyJoinCriteria>(
+        new TestManyToManyJoinCriteria
+        {
+            Id = 1,
+            WithCompany = true
+        });
+
+Query query = builder.Build();
+```
+Produced sql:
+```sql
+SELECT 
+    [p].* , 0 as SplitOnCompanyId , 
+    [c].* 
+FROM Persons [p]
+    LEFT JOIN CompanyPersons [cp] on [cp].PersonId = [p].CompanyId
+    LEFT JOIN Company [c] on [c].Id = [cp].CompanyId
+WHERE [p].Id = @pId
 ```
