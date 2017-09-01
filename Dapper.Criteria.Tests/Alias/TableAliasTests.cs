@@ -43,7 +43,8 @@ namespace Dapper.Criteria.Tests.Alias
                     WithCars = true,
                     WithHouses = true,
                     WithAirplans = true,
-                    WithInstruments = true
+                    WithInstruments = true,
+                    Name = "Instrument #1"
                 });
 
             Query query = builder.Build();
@@ -63,6 +64,7 @@ namespace Dapper.Criteria.Tests.Alias
                         LEFT JOIN Airplans [a] on [a].PersonId = [p].Id
                         LEFT JOIN Houses [h] on [h].PersonId = [p].Id
                         LEFT JOIN Instruments [i] on [i].Instrument = [c].InstrId
+                    WHERE [i].Name = @iName
                 ".Simplify());
         }
 

@@ -41,19 +41,21 @@ namespace Dapper.Criteria.Helpers.Where
                 {
                     string tableName;
 
-                    if (!String.IsNullOrEmpty(criteriaTableAlias))
-                    {
-                        tableName = criteriaTableAlias;
-                    }
-                    else if (!String.IsNullOrEmpty(whereAttribute.TableAlias))
+                    if (!String.IsNullOrEmpty(whereAttribute.TableAlias))
                     {
                         tableName = whereAttribute.TableAlias;
                     }
+                    else if (!String.IsNullOrEmpty(whereAttribute.TableName))
+                    {
+                        tableName = whereAttribute.TableName;
+                    }
+                    else if (!String.IsNullOrEmpty(criteriaTableAlias))
+                    {
+                        tableName = criteriaTableAlias;
+                    }
                     else
                     {
-                        tableName = !string.IsNullOrWhiteSpace(whereAttribute.TableName)
-                            ? whereAttribute.TableName
-                            : criteriaTableName;
+                        tableName = criteriaTableName;
                     }
                     
                     string paramName = $"@{NormalizeTableName(tableName)}{propertyInfo.Name}";

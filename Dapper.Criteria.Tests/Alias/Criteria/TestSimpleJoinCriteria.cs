@@ -41,5 +41,11 @@ namespace Dapper.Criteria.Tests.Alias.Criteria
             CurrentTableAlias = "[c]",
             CurrentTable = "Cars")]
         public bool WithInstruments { get; set; }
+
+        [Where(
+            "Name", 
+            TableName = "Instruments", 
+            TableAlias = "[i]")]
+        public string Name { get; set; }
     }
 }
