@@ -28,7 +28,7 @@ namespace Dapper.Criteria.Helpers.Join
         {
             return joinAttribute.NoSplit
                        ? string.Empty
-                       : $"SplitOn{joinAttribute.JoinedTable}{joinAttribute.JoinedTableField}";
+                       : $"SplitOn{joinAttribute.JoinedTable.Replace("[", "").Replace("]", "")}{joinAttribute.JoinedTableField}";
         }
 
         protected virtual string GetAddOnClauses(JoinAttribute joinAttribute)
