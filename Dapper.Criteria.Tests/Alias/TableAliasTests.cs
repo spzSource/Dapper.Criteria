@@ -76,6 +76,7 @@ namespace Dapper.Criteria.Tests.Alias
                     new TestManyToManyJoinCriteria
                     {
                         Id = 1,
+                        CompanyId = 2,
                         WithCompany = true
                     });
 
@@ -91,7 +92,7 @@ namespace Dapper.Criteria.Tests.Alias
                     FROM Persons [p]
                         LEFT JOIN CompanyPersons [cp] on [cp].PersonId = [p].CompanyId
                         LEFT JOIN Company [c] on [c].Id = [cp].CompanyId
-                    WHERE [p].Id = @pId
+                    WHERE [c].Id = @cCompanyId AND [p].Id = @pId
                 ".Simplify());
         }
     }

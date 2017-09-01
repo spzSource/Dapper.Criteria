@@ -18,6 +18,12 @@ namespace Dapper.Criteria.Tests.Alias.Criteria
             JoinedTableField = "Id")]
         public bool WithCompany { get; set; }
 
+        [Where(
+            field: "Id", 
+            TableAlias = "[c]", 
+            TableName = "Company")]
+        public int? CompanyId { get; set; }
+
         [Where]
         public int? Id { get; set; }
     }
