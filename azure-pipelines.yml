@@ -28,5 +28,5 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    testAssemblyVer2: '**\*tests*.dll!**\*TestAdapter.dll!**\obj\**'
-    codeCoverageEnabled: False
+    testAssemblyVer2: '**\*Tests*.dll!**\*TestAdapter.dll!**\obj\**'
+    codeCoverageEnabled: True
