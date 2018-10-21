@@ -29,5 +29,9 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     testSelector: 'testAssemblies'
-    testAssemblyVer2: '**\*.Tests.dll'
+    testAssemblyVer2: |
+      **\*.Tests.dll
+      **\xunit.runner.visualstudio.testadapter.dll
     codeCoverageEnabled: True
+    
+- task: PublishBuildArtifacts@1
